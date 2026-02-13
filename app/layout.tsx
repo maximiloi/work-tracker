@@ -1,6 +1,6 @@
 import { JetBrains_Mono } from 'next/font/google';
 
-import Navbar from '@/components/ui/Navbar';
+import Navbar from '@/components/Navbar';
 
 import type { Metadata } from 'next';
 
