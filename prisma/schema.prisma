@@ -14,15 +14,20 @@ datasource db {
 }
 
 model User {
-  id            String    @id
-  name          String
-  email         String
-  emailVerified Boolean   @default(false)
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  sessions      Session[]
-  accounts      Account[]
+  id             String    @id
+  name           String
+  email          String
+  emailVerified  Boolean   @default(false)
+  image          String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  sessions       Session[]
+  accounts       Account[]
+  // связи для задач
+  createdTasks   Task[]    @relation("TaskCreatedBy")
+  updatedTasks   Task[]    @relation("TaskUpdatedBy")
+  completedTasks Task[]    @relation("TaskCompletedBy")
+  assignedTasks  Task[]    @relation("TaskAssignee")
 
   @@unique([email])
   @@map("user")
@@ -74,4 +79,166 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model Project {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  clientName  String?
+  clientEmail String?
+  budget      Float?
+  deadline    DateTime?
+
+  status ProjectStatus @default(PLANNING)
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  completedAt DateTime?
+
+  boards Board[]
+  tasks  Task[]
+}
+
+enum ProjectStatus {
+  PLANNING
+  DEVELOPMENT
+  TESTING
+  DEPLOYED
+  MAINTENANCE
+  COMPLETED
+}
+
+model Board {
+  id        String @id @default(cuid())
+  name      String // "Основная", "Дизайн", "Backend"
+  projectId String
+
+  project Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  columns Column[]
+}
+
+enum ColumnStatus {
+  BACKLOG
+  TODO
+  IN_PROGRESS
+  CODE_REVIEW
+  QA_TESTING
+  DESIGN_REVIEW
+  READY_FOR_DEPLOY
+  DEPLOYED
+  DONE
+}
+
+model Column {
+  id     String       @id @default(cuid())
+  name   String
+  status ColumnStatus
+  order  Int
+
+  boardId String
+  board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+
+  tasks Task[]
+}
+
+model Task {
+  id          String  @id @default(cuid())
+  title       String
+  description String?
+  notes       String? // Заметки, комментарии
+
+  status        TaskStatus  @default(TODO)
+  priority      Priority    @default(NORMAL)
+  complexity    Complexity? // Оценка сложности
+  estimatedTime Int? // Часы
+  spentTime     Int? // Потрачено часов
+
+  order Int @default(0)
+
+  createdBy     String // Кто создал
+  createdByUser User   @relation("TaskCreatedBy", fields: [createdBy], references: [id])
+
+  updatedBy     String? // Последнее обновление
+  updatedByUser User?   @relation("TaskUpdatedBy", fields: [updatedBy], references: [id])
+
+  completedBy     String? // Кто завершил
+  completedByUser User?   @relation("TaskCompletedBy", fields: [completedBy], references: [id])
+
+  assigneeId String? // Назначен на
+  assignee   User?   @relation("TaskAssignee", fields: [assigneeId], references: [id])
+
+  columnId String?
+  column   Column? @relation(fields: [columnId], references: [id], onDelete: SetNull)
+
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id])
+
+  subtasks    Subtask[]
+  attachments Attachment[]
+  tags        TaskTag[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  completedAt DateTime?
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  BLOCKED
+  REVIEW
+  DONE
+}
+
+enum Priority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum Complexity {
+  EASY
+  MEDIUM
+  HARD
+  EXPERT
+}
+
+model Subtask {
+  id        String  @id @default(cuid())
+  title     String
+  completed Boolean @default(false)
+
+  taskId String
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+}
+
+model Attachment {
+  id   String @id @default(cuid())
+  name String
+  url  String
+  type String // image, file, screenshot
+
+  taskId String
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+}
+
+model Tag {
+  id    String  @id @default(cuid())
+  name  String  @unique
+  color String? // #hex
+
+  tasks TaskTag[]
+}
+
+model TaskTag {
+  taskId String
+  tagId  String
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([taskId, tagId])
 }
