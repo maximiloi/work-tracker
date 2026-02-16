@@ -12,8 +12,12 @@ export default function SignOutButton() {
   return (
     <DropdownMenuItem
       onClick={async () => {
-        await signOut();
-        router.push('/sign-in');
+        const result = await signOut();
+        if (result.data) {
+          router.push('/sign-in');
+        } else {
+          alert('Ошибка выхода');
+        }
       }}
     >
       Выход
