@@ -1,14 +1,23 @@
+'use client';
+
 import { Briefcase } from 'lucide-react';
 import Link from 'next/link';
 
+import { useSession } from '@/lib/auth-client';
+
 import { Avatar, AvatarFallback } from './ui/avatar';
 import { Button } from './ui/button';
-import { DropdownMenu, DropdownMenuTrigger } from './ui/dropdown-menu';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu';
 
-import { getSession } from '@/lib/auth';
+import SignOutButton from './SignOutButton';
 
-export default async function Navbar() {
-  const session = await getSession();
+export default function Navbar() {
+  const { data: session } = useSession();
 
   return (
     <nav className='border-b border-gray-200 bg-white'>
@@ -29,8 +38,8 @@ export default async function Navbar() {
                 </Button>
               </Link>
               <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <Button>
+                <DropdownMenuTrigger asChild>
+                  <Button variant={'ghost'}>
                     <Avatar>
                       <AvatarFallback className='bg-primary text-white'>
                         {session.user.name[0].toUpperCase()}
@@ -38,6 +47,15 @@ export default async function Navbar() {
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
+                <DropdownMenuContent align='end'>
+                  <DropdownMenuLabel className='font-normal'>
+                    <p className='text-sm font-medium'>{session.user.name}</p>
+                    <p className='text-sm text-muted-foreground'>
+                      {session.user.email}
+                    </p>
+                  </DropdownMenuLabel>
+                  <SignOutButton />
+                </DropdownMenuContent>
               </DropdownMenu>
             </>
           ) : (
