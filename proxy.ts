@@ -7,13 +7,12 @@ export async function proxy(request: NextRequest) {
     headers: await headers(),
   });
 
-  if (!session) {
-    return NextResponse.redirect(new URL('/sign-in', request.url));
+  const isSignInPage = request.nextUrl.pathname.startsWith('/sign-in');
+  const isSignUpPage = request.nextUrl.pathname.startsWith('/sign-up');
+
+  if ((isSignInPage || isSignUpPage) && session?.user) {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
   return NextResponse.next();
 }
-
-export const config = {
-  matcher: ['/dashboard'],
-};
