@@ -1,0 +1,185 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+
+export default function OnboardingPage() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    clientName: '',
+    clientEmail: '',
+    budget: '',
+    deadline: '',
+  });
+
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/onboarding', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Ошибка создания проекта');
+      }
+
+      // Перенаправляем на страницу проекта
+      router.push(`/dashboard/projects/${data.project.slug}`);
+    } catch (err) {
+      console.error('Onboarding error:', err);
+      setError(err instanceof Error ? err.message : 'Что-то пошло не так');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <section className='container mx-auto flex min-h-[calc(100vh-5rem)] items-center justify-center px-4 py-8'>
+      <Card className='w-full max-w-2xl'>
+        <CardHeader className='text-center'>
+          <CardTitle className='text-2xl'>Добро пожаловать в Work Tracker!</CardTitle>
+          <CardDescription className='text-base'>
+            Создайте свой первый проект и настройте рабочее пространство
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className='space-y-6'>
+            {error && (
+              <div className='rounded-md bg-red-50 p-4 text-sm text-red-600'>
+                {error}
+              </div>
+            )}
+
+            <div className='rounded-lg bg-gray-50 p-4 mb-6'>
+              <h3 className='mb-2 font-medium'>Что будет создано:</h3>
+              <ul className='space-y-2 text-sm text-gray-600'>
+                <li className='flex items-center gap-2'>
+                  <span className='text-green-500'>✓</span>
+                  Проект с доской и колонками
+                </li>
+                <li className='flex items-center gap-2'>
+                  <span className='text-green-500'>✓</span>
+                  Колонки: Backlog, Нужно сделать, В работе, Готово
+                </li>
+              </ul>
+            </div>
+
+            <div className='space-y-4'>
+              <div className='space-y-2'>
+                <Label htmlFor='name'>Название проекта *</Label>
+                <Input
+                  id='name'
+                  name='name'
+                  placeholder='Например: Мой первый проект'
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className='space-y-2'>
+                <Label htmlFor='description'>Описание</Label>
+                <Textarea
+                  id='description'
+                  name='description'
+                  placeholder='Краткое описание проекта'
+                  value={formData.description}
+                  onChange={handleChange}
+                  rows={3}
+                />
+              </div>
+
+              <div className='grid gap-4 sm:grid-cols-2'>
+                <div className='space-y-2'>
+                  <Label htmlFor='clientName'>Клиент</Label>
+                  <Input
+                    id='clientName'
+                    name='clientName'
+                    placeholder='Имя клиента'
+                    value={formData.clientName}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className='space-y-2'>
+                  <Label htmlFor='clientEmail'>Email клиента</Label>
+                  <Input
+                    id='clientEmail'
+                    name='clientEmail'
+                    type='email'
+                    placeholder='client@example.com'
+                    value={formData.clientEmail}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+
+              <div className='grid gap-4 sm:grid-cols-2'>
+                <div className='space-y-2'>
+                  <Label htmlFor='budget'>Бюджет</Label>
+                  <Input
+                    id='budget'
+                    name='budget'
+                    type='number'
+                    placeholder='50000'
+                    value={formData.budget}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className='space-y-2'>
+                  <Label htmlFor='deadline'>Дедлайн</Label>
+                  <Input
+                    id='deadline'
+                    name='deadline'
+                    type='date'
+                    value={formData.deadline}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <Button
+              type='submit'
+              disabled={loading || !formData.name.trim()}
+              className='w-full'
+              size='lg'
+            >
+              {loading ? 'Создаём...' : 'Создать проект'}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+    </section>
+  );
+}
