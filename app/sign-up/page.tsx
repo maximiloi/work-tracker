@@ -40,7 +40,7 @@ export default function SignUpPage() {
       if (result.error) {
         setError(result.error.message ?? 'Ошибка регистрации');
       } else {
-        router.push('/dashboard');
+        router.push('/dashboard/onboarding');
       }
     } catch (err) {
       console.log('🚀 ~ handleSubmit ~ err:', err);
