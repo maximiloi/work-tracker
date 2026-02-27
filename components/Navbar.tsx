@@ -20,20 +20,17 @@ export default function Navbar() {
   const { data: session } = useSession();
 
   return (
-    <nav className='border-b border-gray-200 bg-white'>
-      <div className='container mx-auto flex justify-between h-16 items-center px-4'>
-        <Link href={'/'} className='flex items-center gap-2'>
+    <nav className="border-b border-gray-200 bg-white">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+        <Link href={'/'} className="flex items-center gap-2">
           <Briefcase />
           Work Tracker
         </Link>
-        <div className='flex items-center gap-4'>
+        <div className="flex items-center gap-4">
           {session?.user ? (
             <>
               <Link href={'/dashboard'}>
-                <Button
-                  variant={'ghost'}
-                  className='text-gray-700 hover:text-black'
-                >
+                <Button variant={'ghost'} className="text-gray-700 hover:text-black">
                   Доска
                 </Button>
               </Link>
@@ -41,18 +38,16 @@ export default function Navbar() {
                 <DropdownMenuTrigger asChild>
                   <Button variant={'ghost'}>
                     <Avatar>
-                      <AvatarFallback className='bg-primary text-white'>
+                      <AvatarFallback className="bg-primary text-white">
                         {session.user.name[0].toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align='end'>
-                  <DropdownMenuLabel className='font-normal'>
-                    <p className='text-sm font-medium'>{session.user.name}</p>
-                    <p className='text-sm text-muted-foreground'>
-                      {session.user.email}
-                    </p>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel className="font-normal">
+                    <p className="text-sm font-medium">{session.user.name}</p>
+                    <p className="text-muted-foreground text-sm">{session.user.email}</p>
                   </DropdownMenuLabel>
                   <SignOutButton />
                 </DropdownMenuContent>
@@ -61,10 +56,7 @@ export default function Navbar() {
           ) : (
             <>
               <Link href={'/sign-in'}>
-                <Button
-                  variant={'ghost'}
-                  className='text-gray-700 hover:text-black'
-                >
+                <Button variant={'ghost'} className="text-gray-700 hover:text-black">
                   Войти
                 </Button>
               </Link>

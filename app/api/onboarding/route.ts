@@ -5,12 +5,14 @@ import { headers } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 function generateSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/[^а-яa-z0-9\s-]/gi, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .trim() + `-${Date.now()}`;
+  return (
+    name
+      .toLowerCase()
+      .replace(/[^а-яa-z0-9\s-]/gi, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim() + `-${Date.now()}`
+  );
 }
 
 export async function POST(request: NextRequest) {
@@ -27,7 +29,7 @@ export async function POST(request: NextRequest) {
 
     // Проверяем, есть ли уже проекты у пользователя
     const existingProjects = await prisma.project.findMany({
-      where: { 
+      where: {
         createdByUser: {
           id: userId,
         },
@@ -35,10 +37,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (existingProjects.length > 0) {
-      return NextResponse.json(
-        { error: 'Onboarding already completed' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Onboarding already completed' }, { status: 400 });
     }
 
     // Получаем данные из формы
@@ -47,10 +46,7 @@ export async function POST(request: NextRequest) {
 
     // Валидация обязательных полей
     if (!name || typeof name !== 'string' || name.trim().length === 0) {
-      return NextResponse.json(
-        { error: 'Название проекта обязательно' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Название проекта обязательно' }, { status: 400 });
     }
 
     const projectSlug = generateSlug(name);
@@ -108,9 +104,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('Onboarding error:', error);
-    return NextResponse.json(
-      { error: 'Failed to complete onboarding' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to complete onboarding' }, { status: 500 });
   }
 }

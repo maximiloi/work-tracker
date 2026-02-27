@@ -4,13 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -29,9 +23,7 @@ export default function OnboardingPage() {
     deadline: '',
   });
 
-  function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   }
@@ -65,103 +57,99 @@ export default function OnboardingPage() {
   }
 
   return (
-    <section className='container mx-auto flex min-h-[calc(100vh-5rem)] items-center justify-center px-4 py-8'>
-      <Card className='w-full max-w-2xl'>
-        <CardHeader className='text-center'>
-          <CardTitle className='text-2xl'>Добро пожаловать в Work Tracker!</CardTitle>
-          <CardDescription className='text-base'>
+    <section className="container mx-auto flex min-h-[calc(100vh-5rem)] items-center justify-center px-4 py-8">
+      <Card className="w-full max-w-2xl">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl">Добро пожаловать в Work Tracker!</CardTitle>
+          <CardDescription className="text-base">
             Создайте свой первый проект и настройте рабочее пространство
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className='space-y-6'>
-            {error && (
-              <div className='rounded-md bg-red-50 p-4 text-sm text-red-600'>
-                {error}
-              </div>
-            )}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {error && <div className="rounded-md bg-red-50 p-4 text-sm text-red-600">{error}</div>}
 
-            <div className='rounded-lg bg-gray-50 p-4 mb-6'>
-              <h3 className='mb-2 font-medium'>Что будет создано:</h3>
-              <ul className='space-y-2 text-sm text-gray-600'>
-                <li className='flex items-center gap-2'>
-                  <span className='text-green-500'>✓</span>
+            <div className="mb-6 rounded-lg bg-gray-50 p-4">
+              <h3 className="mb-2 font-medium">Что будет создано:</h3>
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li className="flex items-center gap-2">
+                  <span className="text-green-500">✓</span>
                   Проект с доской и колонками
                 </li>
-                <li className='flex items-center gap-2'>
-                  <span className='text-green-500'>✓</span>
+                <li className="flex items-center gap-2">
+                  <span className="text-green-500">✓</span>
                   Колонки: Backlog, Нужно сделать, В работе, Готово
                 </li>
               </ul>
             </div>
 
-            <div className='space-y-4'>
-              <div className='space-y-2'>
-                <Label htmlFor='name'>Название проекта *</Label>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Название проекта *</Label>
                 <Input
-                  id='name'
-                  name='name'
-                  placeholder='Например: Мой первый проект'
+                  id="name"
+                  name="name"
+                  placeholder="Например: Мой первый проект"
                   value={formData.name}
                   onChange={handleChange}
                   required
                 />
               </div>
 
-              <div className='space-y-2'>
-                <Label htmlFor='description'>Описание</Label>
+              <div className="space-y-2">
+                <Label htmlFor="description">Описание</Label>
                 <Textarea
-                  id='description'
-                  name='description'
-                  placeholder='Краткое описание проекта'
+                  id="description"
+                  name="description"
+                  placeholder="Краткое описание проекта"
                   value={formData.description}
                   onChange={handleChange}
                   rows={3}
                 />
               </div>
 
-              <div className='grid gap-4 sm:grid-cols-2'>
-                <div className='space-y-2'>
-                  <Label htmlFor='clientName'>Клиент</Label>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="clientName">Клиент</Label>
                   <Input
-                    id='clientName'
-                    name='clientName'
-                    placeholder='Имя клиента'
+                    id="clientName"
+                    name="clientName"
+                    placeholder="Имя клиента"
                     value={formData.clientName}
                     onChange={handleChange}
                   />
                 </div>
-                <div className='space-y-2'>
-                  <Label htmlFor='clientEmail'>Email клиента</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="clientEmail">Email клиента</Label>
                   <Input
-                    id='clientEmail'
-                    name='clientEmail'
-                    type='email'
-                    placeholder='client@example.com'
+                    id="clientEmail"
+                    name="clientEmail"
+                    type="email"
+                    placeholder="client@example.com"
                     value={formData.clientEmail}
                     onChange={handleChange}
                   />
                 </div>
               </div>
 
-              <div className='grid gap-4 sm:grid-cols-2'>
-                <div className='space-y-2'>
-                  <Label htmlFor='budget'>Бюджет</Label>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="budget">Бюджет</Label>
                   <Input
-                    id='budget'
-                    name='budget'
-                    type='number'
-                    placeholder='50000'
+                    id="budget"
+                    name="budget"
+                    type="number"
+                    placeholder="50000"
                     value={formData.budget}
                     onChange={handleChange}
                   />
                 </div>
-                <div className='space-y-2'>
-                  <Label htmlFor='deadline'>Дедлайн</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="deadline">Дедлайн</Label>
                   <Input
-                    id='deadline'
-                    name='deadline'
-                    type='date'
+                    id="deadline"
+                    name="deadline"
+                    type="date"
                     value={formData.deadline}
                     onChange={handleChange}
                   />
@@ -170,10 +158,10 @@ export default function OnboardingPage() {
             </div>
 
             <Button
-              type='submit'
+              type="submit"
               disabled={loading || !formData.name.trim()}
-              className='w-full'
-              size='lg'
+              className="w-full"
+              size="lg"
             >
               {loading ? 'Создаём...' : 'Создать проект'}
             </Button>

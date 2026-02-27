@@ -51,63 +51,61 @@ export default function SignUpPage() {
   }
 
   return (
-    <section className='flex min-h-[calc(100vh-5rem)] items-center justify-center bg-white p-4'>
-      <Card className='w-full max-w-md'>
+    <section className="flex min-h-[calc(100vh-5rem)] items-center justify-center bg-white p-4">
+      <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Регистрация</CardTitle>
-          <CardDescription>
-            Создать аккаунт и начать трекать свои задачи
-          </CardDescription>
+          <CardDescription>Создать аккаунт и начать трекать свои задачи</CardDescription>
         </CardHeader>
 
-        <form className='space-y-4' onSubmit={handleSubmit}>
-          <CardContent className='space-y-4'>
-            {error && <p className='text-red-500'>{error}</p>}
-            <div className='space-y-2'>
-              <Label htmlFor='name'>Имя</Label>
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          <CardContent className="space-y-4">
+            {error && <p className="text-red-500">{error}</p>}
+            <div className="space-y-2">
+              <Label htmlFor="name">Имя</Label>
               <Input
-                id='name'
-                name='name'
-                type='text'
-                placeholder='Введите имя'
+                id="name"
+                name="name"
+                type="text"
+                placeholder="Введите имя"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
               />
             </div>
-            <div className='space-y-2'>
-              <Label htmlFor='email'>Email</Label>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
               <Input
-                id='email'
-                name='email'
-                type='email'
-                placeholder='Введите e-mail'
+                id="email"
+                name="email"
+                type="email"
+                placeholder="Введите e-mail"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
-            <div className='space-y-2'>
-              <Label htmlFor='password'>Пароль</Label>
+            <div className="space-y-2">
+              <Label htmlFor="password">Пароль</Label>
               <Input
-                id='password'
-                name='password'
-                type='password'
+                id="password"
+                name="password"
+                type="password"
                 minLength={8}
-                placeholder='Введите Пароль'
+                placeholder="Введите Пароль"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
           </CardContent>
-          <CardFooter className='flex flex-col space-y-4'>
-            <Button type='submit' className='w-full' disabled={loading}>
+          <CardFooter className="flex flex-col space-y-4">
+            <Button type="submit" className="w-full" disabled={loading}>
               {loading ? 'Создается аккаунт...' : 'Создать аккаунт'}
             </Button>
             <p>
               Уже есть аккаунт?{' '}
-              <Link href={'/sign-in'} className='text-gray-600'>
+              <Link href={'/sign-in'} className="text-gray-600">
                 Войти
               </Link>
             </p>

@@ -24,7 +24,11 @@ export default async function Dashboard() {
   }
 
   // Если проекты есть — редирект на первый проект
-  redirect(`/dashboard/projects/${projects[0].slug}`);
+  // redirect(`/dashboard/projects/${projects[0].slug}`);
 
-  return <section className='container mx-auto px-4'>Dashboard</section>;
+  return (
+    <section className="container mx-auto px-4 py-8">
+      <h2 className="text-3xl font-bold">Мои проекты</h2>
+    </section>
+  );
 }
