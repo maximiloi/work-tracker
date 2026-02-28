@@ -9,9 +9,27 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
+const PROJECT_COLORS = [
+  { name: 'Красный', value: '#ef4444' },
+  { name: 'Оранжевый', value: '#f97316' },
+  { name: 'Желтый', value: '#eab308' },
+  { name: 'Зеленый', value: '#22c55e' },
+  { name: 'Синий', value: '#3b82f6' },
+  { name: 'Фиолетовый', value: '#a855f7' },
+  { name: 'Розовый', value: '#ec4899' },
+  { name: 'Бирюзовый', value: '#14b8a6' },
+  { name: 'Индиго', value: '#6366f1' },
+  { name: 'Лайм', value: '#84cc16' },
+  { name: 'Коралловый', value: '#fb7185' },
+  { name: 'Янтарный', value: '#f59e0b' },
+  { name: 'Изумрудный', value: '#10b981' },
+  { name: 'Циан', value: '#06b6d4' },
+];
+
 export default function OnboardingPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string>(PROJECT_COLORS[4].value);
   const router = useRouter();
 
   const [formData, setFormData] = useState({
@@ -34,10 +52,13 @@ export default function OnboardingPage() {
     setError(null);
 
     try {
-      const response = await fetch('/api/onboarding', {
+      const response = await fetch('/api/projects', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          color: selectedColor,
+        }),
       });
 
       const data = await response.json();
@@ -94,6 +115,27 @@ export default function OnboardingPage() {
                   onChange={handleChange}
                   required
                 />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="color">Цвет проекта</Label>
+                <div className="flex flex-wrap gap-3">
+                  {PROJECT_COLORS.map((color) => (
+                    <button
+                      key={color.value}
+                      type="button"
+                      onClick={() => setSelectedColor(color.value)}
+                      className={`h-8 w-8 rounded-full border-2 transition-all ${
+                        selectedColor === color.value
+                          ? 'scale-110 border-gray-900'
+                          : 'border-transparent hover:scale-105'
+                      }`}
+                      style={{ backgroundColor: color.value }}
+                      title={color.name}
+                      aria-label={color.name}
+                    />
+                  ))}
+                </div>
               </div>
 
               <div className="space-y-2">

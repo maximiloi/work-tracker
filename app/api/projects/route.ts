@@ -27,22 +27,8 @@ export async function POST(request: NextRequest) {
 
     const userId = session.user.id;
 
-    // Проверяем, есть ли уже проекты у пользователя
-    const existingProjects = await prisma.project.findMany({
-      where: {
-        createdByUser: {
-          id: userId,
-        },
-      },
-    });
-
-    if (existingProjects.length > 0) {
-      return NextResponse.json({ error: 'Onboarding already completed' }, { status: 400 });
-    }
-
-    // Получаем данные из формы
     const body = await request.json();
-    const { name, description, clientName, clientEmail, budget, deadline } = body;
+    const { name, description, clientName, clientEmail, budget, deadline, color } = body;
 
     // Валидация обязательных полей
     if (!name || typeof name !== 'string' || name.trim().length === 0) {
@@ -51,7 +37,7 @@ export async function POST(request: NextRequest) {
 
     const projectSlug = generateSlug(name);
 
-    // Создаем первый проект
+    // Создаем проект
     const project = await prisma.project.create({
       data: {
         name: name.trim(),
@@ -61,6 +47,7 @@ export async function POST(request: NextRequest) {
         clientEmail: clientEmail?.trim() || null,
         budget: budget ? parseFloat(budget) : null,
         deadline: deadline ? new Date(deadline) : null,
+        color: color?.trim() || null,
         createdByUser: {
           connect: { id: userId },
         },
@@ -100,10 +87,11 @@ export async function POST(request: NextRequest) {
         id: project.id,
         slug: project.slug,
         name: project.name,
+        color: project.color,
       },
     });
   } catch (error) {
-    console.error('Onboarding error:', error);
-    return NextResponse.json({ error: 'Failed to complete onboarding' }, { status: 500 });
+    console.error('Project creation error:', error);
+    return NextResponse.json({ error: 'Failed to create project' }, { status: 500 });
   }
 }
