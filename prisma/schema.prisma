@@ -93,6 +93,7 @@ model Project {
   clientEmail String?
   budget      Float?
   deadline    DateTime?
+  color       String?
 
   status ProjectStatus @default(PLANNING)
 
