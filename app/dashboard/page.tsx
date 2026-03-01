@@ -1,5 +1,6 @@
 import { Plus } from 'lucide-react';
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import { getSession } from '@/lib/auth';
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
 export default async function Dashboard() {
   const session = await getSession();
 
+  // Нет сессии то перенаправляет на авторизацию
   if (!session?.user) {
     redirect('sign-in');
   }
@@ -32,34 +34,26 @@ export default async function Dashboard() {
     redirect('/dashboard/onboarding');
   }
 
-  // Если проекты есть — редирект на первый проект
-  // redirect(`/dashboard/projects/${projects[0].slug}`);
-
   return (
     <section className="container mx-auto px-4 py-8">
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold">Мои проекты</h2>
-        <a href="/dashboard/onboarding">
-          <Button className="rounded-md bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-800">
+        <h2 className="text-4xl font-bold">Мои проекты</h2>
+        <Button asChild size="lg">
+          <Link href="/dashboard/onboarding">
             <Plus /> Добавить проект
-          </Button>
-        </a>
+          </Link>
+        </Button>
       </div>
       <div className="mt-4 flex flex-wrap gap-2">
         {projects.map((project) => (
-          <a
-            key={project.id}
-            href={`/dashboard/projects/${project.slug}`}
-            className="flex items-center gap-2 rounded-md border bg-gray-50 px-4 py-2 text-sm font-medium hover:bg-gray-100"
-          >
-            {project.color && (
-              <span
-                className="h-3 w-3 rounded-full"
-                style={{ backgroundColor: project.color }}
-              />
-            )}
-            {project.name}
-          </a>
+          <Button asChild key={project.id} size="lg" variant="outline">
+            <Link href={`/dashboard/projects/${project.slug}`}>
+              {project.color && (
+                <span className="h-3 w-3 rounded-full" style={{ backgroundColor: project.color }} />
+              )}
+              {project.name}
+            </Link>
+          </Button>
         ))}
       </div>
     </section>
