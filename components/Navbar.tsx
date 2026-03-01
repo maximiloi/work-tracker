@@ -29,14 +29,12 @@ export default function Navbar() {
         <div className="flex items-center gap-4">
           {session?.user ? (
             <>
-              <Link href={'/dashboard'}>
-                <Button variant={'ghost'} className="text-gray-700 hover:text-black">
-                  Доска
-                </Button>
-              </Link>
+              <Button asChild variant="ghost" className="text-gray-700 hover:text-black">
+                <Link href={'/dashboard'}>Доска</Link>
+              </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant={'ghost'}>
+                  <Button variant="ghost">
                     <Avatar>
                       <AvatarFallback className="bg-primary text-white">
                         {session.user.name[0].toUpperCase()}
