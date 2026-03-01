@@ -9,22 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
-const PROJECT_COLORS = [
-  { name: 'Красный', value: '#ef4444' },
-  { name: 'Оранжевый', value: '#f97316' },
-  { name: 'Желтый', value: '#eab308' },
-  { name: 'Зеленый', value: '#22c55e' },
-  { name: 'Синий', value: '#3b82f6' },
-  { name: 'Фиолетовый', value: '#a855f7' },
-  { name: 'Розовый', value: '#ec4899' },
-  { name: 'Бирюзовый', value: '#14b8a6' },
-  { name: 'Индиго', value: '#6366f1' },
-  { name: 'Лайм', value: '#84cc16' },
-  { name: 'Коралловый', value: '#fb7185' },
-  { name: 'Янтарный', value: '#f59e0b' },
-  { name: 'Изумрудный', value: '#10b981' },
-  { name: 'Циан', value: '#06b6d4' },
-];
+import { PROJECT_COLORS } from '@/lib/PROJECT_COLORS';
 
 export default function OnboardingPage() {
   const [loading, setLoading] = useState(false);
@@ -36,7 +21,7 @@ export default function OnboardingPage() {
     name: '',
     description: '',
     clientName: '',
-    clientEmail: '',
+    clientContact: '',
     budget: '',
     deadline: '',
   });
@@ -81,28 +66,14 @@ export default function OnboardingPage() {
     <section className="container mx-auto flex min-h-[calc(100vh-5rem)] items-center justify-center px-4 py-8">
       <Card className="w-full max-w-2xl">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Добро пожаловать в Work Tracker!</CardTitle>
+          <CardTitle className="text-2xl">Создание проекта</CardTitle>
           <CardDescription className="text-base">
-            Создайте свой первый проект и настройте рабочее пространство
+            Создайте свой проект и настройте рабочее пространство
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && <div className="rounded-md bg-red-50 p-4 text-sm text-red-600">{error}</div>}
-
-            <div className="mb-6 rounded-lg bg-gray-50 p-4">
-              <h3 className="mb-2 font-medium">Что будет создано:</h3>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li className="flex items-center gap-2">
-                  <span className="text-green-500">✓</span>
-                  Проект с доской и колонками
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="text-green-500">✓</span>
-                  Колонки: Backlog, Нужно сделать, В работе, Готово
-                </li>
-              </ul>
-            </div>
 
             <div className="space-y-4">
               <div className="space-y-2">
@@ -162,13 +133,12 @@ export default function OnboardingPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="clientEmail">Email клиента</Label>
+                  <Label htmlFor="clientContact">Контакт клиента</Label>
                   <Input
-                    id="clientEmail"
-                    name="clientEmail"
-                    type="email"
-                    placeholder="client@example.com"
-                    value={formData.clientEmail}
+                    id="clientContact"
+                    name="clientContact"
+                    placeholder="Контакт клиента"
+                    value={formData.clientContact}
                     onChange={handleChange}
                   />
                 </div>

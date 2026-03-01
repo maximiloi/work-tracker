@@ -1,6 +1,6 @@
 import { auth } from '@/lib/auth';
-import prisma from '@/lib/prisma';
 import { ColumnStatus } from '@/lib/generated/prisma/enums';
+import prisma from '@/lib/prisma';
 import { headers } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     const userId = session.user.id;
 
     const body = await request.json();
-    const { name, description, clientName, clientEmail, budget, deadline, color } = body;
+    const { name, description, clientName, clientContact, budget, deadline, color } = body;
 
     // Валидация обязательных полей
     if (!name || typeof name !== 'string' || name.trim().length === 0) {
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
         slug: projectSlug,
         description: description?.trim() || null,
         clientName: clientName?.trim() || null,
-        clientEmail: clientEmail?.trim() || null,
+        clientContact: clientContact?.trim() || null,
         budget: budget ? parseFloat(budget) : null,
         deadline: deadline ? new Date(deadline) : null,
         color: color?.trim() || null,

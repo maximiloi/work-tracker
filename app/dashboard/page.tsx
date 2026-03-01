@@ -31,7 +31,7 @@ export default async function Dashboard() {
 
   // Если проектов нет — редирект на онбординг
   if (projects.length === 0) {
-    redirect('/dashboard/onboarding');
+    redirect('/dashboard/project/create');
   }
 
   return (
@@ -39,7 +39,7 @@ export default async function Dashboard() {
       <div className="flex items-center justify-between">
         <h2 className="text-4xl font-bold">Мои проекты</h2>
         <Button asChild size="lg">
-          <Link href="/dashboard/onboarding">
+          <Link href="/dashboard/project/create">
             <Plus /> Добавить проект
           </Link>
         </Button>
@@ -47,7 +47,7 @@ export default async function Dashboard() {
       <div className="mt-4 flex flex-wrap gap-2">
         {projects.map((project) => (
           <Button asChild key={project.id} size="lg" variant="outline">
-            <Link href={`/dashboard/projects/${project.slug}`}>
+            <Link href={`/dashboard/project/${project.slug}`}>
               {project.color && (
                 <span className="h-3 w-3 rounded-full" style={{ backgroundColor: project.color }} />
               )}
