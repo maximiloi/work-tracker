@@ -1,19 +1,9 @@
 import { auth } from '@/lib/auth';
 import { ColumnStatus } from '@/lib/generated/prisma/enums';
+import { generateSlug } from '@/lib/generateSlug';
 import prisma from '@/lib/prisma';
 import { headers } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-
-function generateSlug(name: string): string {
-  return (
-    name
-      .toLowerCase()
-      .replace(/[^а-яa-z0-9\s-]/gi, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .trim() + `-${Date.now()}`
-  );
-}
 
 export async function POST(request: NextRequest) {
   try {
@@ -66,7 +56,7 @@ export async function POST(request: NextRequest) {
 
     // Создаем колонки по умолчанию
     const columns: Array<{ name: string; status: ColumnStatus; order: number }> = [
-      { name: 'Backlog', status: ColumnStatus.BACKLOG, order: 0 },
+      { name: 'Идеи', status: ColumnStatus.BACKLOG, order: 0 },
       { name: 'Нужно сделать', status: ColumnStatus.TODO, order: 1 },
       { name: 'В работе', status: ColumnStatus.IN_PROGRESS, order: 2 },
       { name: 'Готово', status: ColumnStatus.DONE, order: 3 },
