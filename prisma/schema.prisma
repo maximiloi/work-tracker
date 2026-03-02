@@ -23,6 +23,7 @@ model User {
   updatedTasks    Task[]    @relation("TaskUpdatedBy")
   accounts        Account[]
   sessions        Session[]
+  boards          Board[]
 
   @@map("user")
 }
@@ -91,62 +92,77 @@ model Project {
   updatedBy     String?
   color         String?
   boards        Board[]
+  tasks         Task[]
   createdByUser User          @relation("ProjectCreatedBy", fields: [createdBy], references: [id])
   updatedByUser User?         @relation("ProjectUpdatedBy", fields: [updatedBy], references: [id])
-  tasks         Task[]
 }
 
 model Board {
-  id        String   @id @default(cuid())
-  name      String
-  projectId String
-  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  columns   Column[]
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  userId      String?         // null = доска проекта, иначе = личная доска пользователя
+  projectId   String?         // null = общая доска всех проектов, иначе = привязана к проекту
+  isDefault   Boolean  @default(false)  // доска по умолчанию для пользователя
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  columns     Column[]
+  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project     Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([projectId])
+  @@index([userId, isDefault])
+  @@map("board")
 }
 
 model Column {
-  id      String       @id @default(cuid())
-  name    String
-  status  ColumnStatus
-  order   Int
-  boardId String
-  board   Board        @relation(fields: [boardId], references: [id], onDelete: Cascade)
-  tasks   Task[]       @relation("ColumnTasks")
+  id        String   @id @default(cuid())
+  name      String
+  boardId   String
+  order     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  tasks     Task[]   @relation("ColumnTasks")
+
+  @@index([boardId, order])
+  @@map("column")
 }
 
 model Task {
-  id              String       @id @default(cuid())
+  id              String   @id @default(cuid())
   title           String
   description     String?
   notes           String?
-  status          TaskStatus   @default(TODO)
-  priority        Priority     @default(NORMAL)
+  priority        Priority @default(NORMAL)
   complexity      Complexity?
   estimatedTime   Int?
   spentTime       Int?
-  order           BigInt       @default(0)
+  order           Int      @default(0)
   createdBy       String
   updatedBy       String?
   completedBy     String?
   assigneeId      String?
   columnId        String
   projectId       String
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
   completedAt     DateTime?
   attachments     Attachment[]
   subtasks        Subtask[]
-  assignee        User?        @relation("TaskAssignee", fields: [assigneeId], references: [id])
-  column          Column       @relation("ColumnTasks", fields: [columnId], references: [id])
-  completedByUser User?        @relation("TaskCompletedBy", fields: [completedBy], references: [id])
-  createdByUser   User         @relation("TaskCreatedBy", fields: [createdBy], references: [id])
-  project         Project      @relation(fields: [projectId], references: [id])
-  updatedByUser   User?        @relation("TaskUpdatedBy", fields: [updatedBy], references: [id])
+  assignee        User?    @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  column          Column   @relation("ColumnTasks", fields: [columnId], references: [id])
+  completedByUser User?    @relation("TaskCompletedBy", fields: [completedBy], references: [id])
+  createdByUser   User     @relation("TaskCreatedBy", fields: [createdBy], references: [id])
+  project         Project  @relation(fields: [projectId], references: [id])
+  updatedByUser   User?    @relation("TaskUpdatedBy", fields: [updatedBy], references: [id])
   tags            TaskTag[]
 
-  @@index([projectId, status])
+  @@index([projectId])
   @@index([assigneeId])
   @@index([columnId, order])
+  @@map("task")
 }
 
 model Subtask {
@@ -155,6 +171,8 @@ model Subtask {
   completed Boolean @default(false)
   taskId    String
   task      Task    @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@map("subtask")
 }
 
 model Attachment {
@@ -164,6 +182,8 @@ model Attachment {
   type   String
   taskId String
   task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@map("attachment")
 }
 
 model Tag {
@@ -176,10 +196,11 @@ model Tag {
 model TaskTag {
   taskId String
   tagId  String
-  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
-  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  tag    Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
 
   @@id([taskId, tagId])
+  @@map("task_tag")
 }
 
 enum ProjectStatus {
@@ -189,26 +210,6 @@ enum ProjectStatus {
   DEPLOYED
   MAINTENANCE
   COMPLETED
-}
-
-enum ColumnStatus {
-  BACKLOG
-  TODO
-  IN_PROGRESS
-  CODE_REVIEW
-  QA_TESTING
-  DESIGN_REVIEW
-  READY_FOR_DEPLOY
-  DEPLOYED
-  DONE
-}
-
-enum TaskStatus {
-  TODO
-  IN_PROGRESS
-  BLOCKED
-  REVIEW
-  DONE
 }
 
 enum Priority {
