@@ -1,9 +1,9 @@
-import { auth } from '@/lib/auth';
-import { ColumnStatus } from '@/lib/generated/prisma/enums';
-import { generateSlug } from '@/lib/generateSlug';
-import prisma from '@/lib/prisma';
 import { headers } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
+
+import { auth } from '@/lib/auth';
+import { generateSlug } from '@/lib/generateSlug';
+import prisma from '@/lib/prisma';
 
 export async function POST(request: NextRequest) {
   try {
@@ -48,24 +48,21 @@ export async function POST(request: NextRequest) {
     const board = await prisma.board.create({
       data: {
         name: 'Основная',
-        project: {
-          connect: { id: project.id },
-        },
+        projectId: project.id,
       },
     });
 
-    // Создаем колонки по умолчанию
-    const columns: Array<{ name: string; status: ColumnStatus; order: number }> = [
-      { name: 'Идеи', status: ColumnStatus.BACKLOG, order: 0 },
-      { name: 'Нужно сделать', status: ColumnStatus.TODO, order: 1 },
-      { name: 'В работе', status: ColumnStatus.IN_PROGRESS, order: 2 },
-      { name: 'Готово', status: ColumnStatus.DONE, order: 3 },
+    // Создаем колонки по умолчанию (без status enum)
+    const columns = [
+      { name: 'Идеи', order: 0 },
+      { name: 'Нужно сделать', order: 1 },
+      { name: 'В работе', order: 2 },
+      { name: 'Готово', order: 3 },
     ];
 
     await prisma.column.createMany({
       data: columns.map((col) => ({
         name: col.name,
-        status: col.status,
         order: col.order,
         boardId: board.id,
       })),
