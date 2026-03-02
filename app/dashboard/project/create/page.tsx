@@ -53,7 +53,7 @@ export default function OnboardingPage() {
       }
 
       // Перенаправляем на страницу проекта
-      router.push(`/dashboard/projects/${data.project.slug}`);
+      router.push(`/dashboard/project/${data.project.slug}`);
     } catch (err) {
       console.error('Onboarding error:', err);
       setError(err instanceof Error ? err.message : 'Что-то пошло не так');
@@ -90,7 +90,7 @@ export default function OnboardingPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="color">Цвет проекта</Label>
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-4">
                   {PROJECT_COLORS.map((color) => (
                     <button
                       key={color.value}
