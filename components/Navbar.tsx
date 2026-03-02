@@ -30,7 +30,7 @@ export default function Navbar() {
           {session?.user ? (
             <>
               <Button asChild variant="ghost" className="text-gray-700 hover:text-black">
-                <Link href={'/dashboard'}>Доска</Link>
+                <Link href={'/dashboard'}>Дашборд</Link>
               </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
