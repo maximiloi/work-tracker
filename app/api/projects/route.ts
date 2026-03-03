@@ -54,9 +54,9 @@ export async function POST(request: NextRequest) {
 
     // Создаем колонки по умолчанию (без status enum)
     const columns = [
-      { name: 'Идеи', order: 0 },
-      { name: 'Нужно сделать', order: 1 },
-      { name: 'В работе', order: 2 },
+      { name: 'Нужно сделать', order: 0 },
+      { name: 'В работе', order: 1 },
+      { name: 'На проверке', order: 2 },
       { name: 'Готово', order: 3 },
     ];
 
