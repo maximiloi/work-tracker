@@ -101,9 +101,9 @@ model Board {
   id          String   @id @default(cuid())
   name        String
   description String?
-  userId      String?         // null = доска проекта, иначе = личная доска пользователя
-  projectId   String?         // null = общая доска всех проектов, иначе = привязана к проекту
-  isDefault   Boolean  @default(false)  // доска по умолчанию для пользователя
+  userId      String? // null = доска проекта, иначе = личная доска пользователя
+  projectId   String? // null = общая доска всех проектов, иначе = привязана к проекту
+  isDefault   Boolean  @default(false) // доска по умолчанию для пользователя
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   columns     Column[]
@@ -131,32 +131,33 @@ model Column {
 }
 
 model Task {
-  id              String   @id @default(cuid())
+  id              String       @id @default(cuid())
   title           String
   description     String?
   notes           String?
-  priority        Priority @default(NORMAL)
+  priority        Priority     @default(NORMAL)
   complexity      Complexity?
   estimatedTime   Int?
   spentTime       Int?
-  order           Int      @default(0)
+  order           Int          @default(0)
   createdBy       String
   updatedBy       String?
   completedBy     String?
   assigneeId      String?
   columnId        String
   projectId       String
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
   completedAt     DateTime?
+  dueDate         DateTime?
   attachments     Attachment[]
   subtasks        Subtask[]
-  assignee        User?    @relation("TaskAssignee", fields: [assigneeId], references: [id])
-  column          Column   @relation("ColumnTasks", fields: [columnId], references: [id])
-  completedByUser User?    @relation("TaskCompletedBy", fields: [completedBy], references: [id])
-  createdByUser   User     @relation("TaskCreatedBy", fields: [createdBy], references: [id])
-  project         Project  @relation(fields: [projectId], references: [id])
-  updatedByUser   User?    @relation("TaskUpdatedBy", fields: [updatedBy], references: [id])
+  assignee        User?        @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  column          Column       @relation("ColumnTasks", fields: [columnId], references: [id])
+  completedByUser User?        @relation("TaskCompletedBy", fields: [completedBy], references: [id])
+  createdByUser   User         @relation("TaskCreatedBy", fields: [createdBy], references: [id])
+  project         Project      @relation(fields: [projectId], references: [id])
+  updatedByUser   User?        @relation("TaskUpdatedBy", fields: [updatedBy], references: [id])
   tags            TaskTag[]
 
   @@index([projectId])
@@ -196,8 +197,8 @@ model Tag {
 model TaskTag {
   taskId String
   tagId  String
-  tag    Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
-  task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
 
   @@id([taskId, tagId])
   @@map("task_tag")
